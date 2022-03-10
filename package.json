@@ -2,5 +2,24 @@
   "dependencies": {
     "express": "^4.17.3",
     "inquirer": "^8.2.1"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "wooley-chal-12-employee-tracker",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaywooski/Wooley-chal-12-employee-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaywooski/Wooley-chal-12-employee-tracker/issues"
+  },
+  "homepage": "https://github.com/jaywooski/Wooley-chal-12-employee-tracker#readme"
 }
