@@ -24,20 +24,6 @@ function startPrompt() {
         },
         {
             type: 'list',
-            name: 'employeeManager',
-            message: "Which manager?",
-            choices: [],
-            when: (answer) => answer.action == 'View employees by manager'
-        },
-        {
-            type: 'list',
-            name: 'employeeDept',
-            message: "Which department?",
-            choices: [],
-            when: (answer) => answer.action == 'View employees by department'
-        },
-        {
-            type: 'list',
             name: 'deptBudget',
             message: "Which department?",
             choices: [],
