@@ -7,7 +7,7 @@ VALUES
     (3, 'Cleaning')
 
 
-INSER INTO role
+INSERT INTO roles
     (id, title, salary, department_id)
 VALUES
     (1, 'Lawyer', 200000, 2),

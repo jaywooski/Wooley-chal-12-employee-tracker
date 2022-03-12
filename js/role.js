@@ -3,7 +3,7 @@ const db = require('../db/connection')
 const { startPrompt } = require('../index');
 
 const viewRoles = function() {
-    const req = "SELECT * FROM role";
+    const req = "SELECT * FROM roles";
     db.query(req, function(err, res){
         if (err) throw err;
         console.table(res);
@@ -62,7 +62,7 @@ const addRole = function(){
     ])
     .then((res) => {
         
-        db.query('INSERT INTO role(id, title, salary, department_id) VALUES (?,?,?,?)',
+        db.query('INSERT INTO roles(id, title, salary, department_id) VALUES (?,?,?,?)',
         [res.id += 1, res.roleName, res.roleSalary, res.roleDept ]),
         function(err, res) {
             if (err) throw err;
