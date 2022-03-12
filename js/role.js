@@ -3,7 +3,7 @@ const db = require('../db/connection')
 const { startPrompt } = require('../index');
 
 const viewRoles = function() {
-    const req = "SELECT * FROM roles";
+    const req = "SELECT roles.*, department.id AS department_id FROM roles LEFT JOIN department ON roles.department_id = department.id;";
     db.query(req, function(err, res){
         if (err) throw err;
         console.table(res);
@@ -54,7 +54,7 @@ const addRole = function(){
             }
         },
         {
-            type: 'list',
+            type: 'rawlist',
             name: 'roleDept',
             message: 'Please enter the department the role: ',
             choices: [/* variable for list of departments to be updated */],
