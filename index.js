@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const { viewDepartments, addDept } = require('./js/department');
-const { addEmployee, viewEmployees, employeePrompt, updateEmployeeRole } = require('./js/employee');
+const { addEmployee, viewEmployees, employeePrompt, updateEmployeeRole, viewEmployeeByManager } = require('./js/employee');
 const mysql = require('mysql2');
 const db = require('./db/connection');
 
@@ -37,28 +37,25 @@ function startPrompt() {
                 viewDepartments();
                 break;
             case 'View all roles':
-
+                viewRoles();
                 break;
             case 'View all employees':
-                viewRoles();
+                viewEmployees();
                 break; 
             case 'View employees by manager':
-                view
+                viewEmployeeByManager();
                 break;
             case 'View employees by department':
-
+                viewEmployeeByDept();
                 break;
             case 'Add a role':
-
+                addRole();
                 break;
             case 'Add a department':
                 addDept();
                 break;
             case 'Add an employee':
                 addEmployee();
-                break;
-            case 'View all roles':
-
                 break;
             case 'Delete a department':
 
@@ -69,8 +66,6 @@ function startPrompt() {
             case 'Update an employee role':
 
                 break;
-
-        
             default:
                 break;
         }

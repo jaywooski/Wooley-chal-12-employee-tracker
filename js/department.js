@@ -72,4 +72,4 @@ const addDept = function() {
     })
 }
 
-module.exports = viewDepartments, addDept;
+module.exports = { viewDepartments, addDept };

@@ -82,3 +82,5 @@ const addRole = function(){
         }
     })
 }
+
+module.exports = { addRole, viewRoles }

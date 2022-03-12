@@ -27,23 +27,74 @@ const viewEmployees = function() {
     })
 }
 
-const employeePrompt = function(answer){
-    return inquirer.prompt([
+const viewEmployeeByManager = function(){
+    inquirer.prompt(
         {
             type: 'list',
             name: 'employeeManager',
             message: "Which manager?",
-            choices: [],
-            when: answer.action == 'View employees by manager'
-        },
+            choices: []
+        }
+    )
+    .then((data) => {
+        db.query('SELECT * FROM employee WHERE manager_id = ?', data.employeeManager, (err, res) => {
+            if (err) throw err;
+            console.log('Showing all employees by manager' + data.employeeManager);
+            console.table(res);
+            inquirer.prompt({
+                type: 'confirm',
+                name: 'continue',
+                message: 'Would you like to do anything else?',
+            })
+            .then((answer) => {
+                if(answer){
+                    startPrompt();
+                }
+                console.log('Thanks! Have a great day!');
+                process.exit();
+            })
+        })
+    })
+    .catch((err)=> {
+        if(err) {
+            console.log(err);
+        }
+    })
+}
+
+const viewEmployeeByDept = function() {
+    inquirer.prompt(
         {
             type: 'list',
             name: 'employeeDept',
             message: "Which department?",
-            choices: [],
-            when: answer.action == 'View employees by department'
+            choices: []
         }     
-    ])
+    )
+    .then((data) => {
+        db.query('SELECT * FROM employee WHERE role_id = ?', data.employeeDept, (err, res) => {
+            if (err) throw err;
+            console.log('Showing all employees by department' + data.employeeDept);
+            console.table(res);
+            inquirer.prompt({
+                type: 'confirm',
+                name: 'continue',
+                message: 'Would you like to do anything else?',
+            })
+            .then((answer) => {
+                if(answer){
+                    startPrompt();
+                }
+                console.log('Thanks! Have a great day!');
+                process.exit();
+            })
+        })
+    })
+    .catch((err)=> {
+        if(err) {
+            console.log(err);
+        }
+    })    
 }
 
 
@@ -162,8 +213,8 @@ const updateEmployeeRole = function() {
                 console.log('Thanks! Have a great day!');
                 process.exit();
             })
-        }
-    )}
-)}
+        })
+    })
+}
 
-module.exports = { addEmployee, viewEmployees, employeePrompt, updateEmployeeRole };
+module.exports = { addEmployee, viewEmployees, viewEmployeeByManager, viewEmployeeByDept, updateEmployeeRole };
