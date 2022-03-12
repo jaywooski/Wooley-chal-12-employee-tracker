@@ -2,10 +2,14 @@ const inquirer = require('inquirer');
 const { viewDepartments, addDept } = require('./js/department');
 const { addEmployee, viewEmployees, employeePrompt, updateEmployeeRole } = require('./js/employee');
 const mysql = require('mysql2');
+const db = require('./db/connection');
 
+db.connect(async function() {
+    startPrompt();
+})
 
 function startPrompt() {
-    return inquirer.prompt([
+    inquirer.prompt([
         {
             type: 'list',
             name: 'action',
@@ -27,7 +31,7 @@ function startPrompt() {
         }
     ])
     .then((data) => {
-        const choice = data;
+        const choice = data.action;
         switch (choice) {
             case 'View all departments':
                 viewDepartments();
@@ -36,10 +40,10 @@ function startPrompt() {
 
                 break;
             case 'View all employees':
-
+                viewRoles();
                 break; 
             case 'View employees by manager':
-
+                view
                 break;
             case 'View employees by department':
 
@@ -63,7 +67,7 @@ function startPrompt() {
 
                 break;
             case 'Update an employee role':
-                
+
                 break;
 
         
