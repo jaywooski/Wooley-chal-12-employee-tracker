@@ -46,52 +46,8 @@ class Business {
         .query(`SELECT * FROM department`);
     }
   
-    getEmpByDeptId(info) {
-      const values = [info.dept_id]
-      return this.db
-        .promise()
-        .query(`SELECT e.first_name AS "First Name" , e.last_name AS "Last Name", d.department_name AS Department
-          FROM employee e
-          INNER JOIN role r
-          ON e.role_id = r.id
-          INNER JOIN department d
-          ON r.department_id = d.id
-          WHERE d.id = ?`,
-          values
-        );
-    }
-  
-    getEmployeeByManagerId(info) {
-      const values = [info.manager_id]
-      return this.db
-        .promise()
-        .query(
-          `SELECT e.first_name AS "First Name" , 
-                  e.last_name AS "Last Name", 
-                  CONCAT(mgmt.first_name, ' ', mgmt.last_name) AS Manager
-          FROM employee e
-          INNER JOIN employee mgmt
-          ON e.manager_id = mgmt.id 
-          WHERE e.manager_id = ?`,
-          values
-        );
-    }
-  
-    getBudgetByDept() {
-      return this.db
-        .promise()
-        .query(
-      `SELECT d.department_name AS Department, 
-              SUM(r.salary) AS Budget
-      FROM role r
-      INNER JOIN department d
-      ON r.department_id = d.id
-      GROUP BY department_name`,
-      );
-    }
-  
     viewRoles() {
-      return this.db
+        return this.db
         .promise()
         .query(
         `SELECT r.title AS Title, 
@@ -137,8 +93,8 @@ class Business {
   
     getEmpRaw() {
       return this.db
-        .promise()
-        .query(
+      .promise()
+      .query(
           `SELECT e.id, 
            e.first_name,
            e.last_name
@@ -160,12 +116,56 @@ class Business {
       return this.db
         .promise()
         .query(
-        `SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name
+            `SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name
         FROM employee 
         WHERE manager_id IS NULL`
       )
     }
   
-  }
+    // getEmpByDeptId(info) {
+    //   const values = [info.dept_id]
+    //   return this.db
+    //     .promise()
+    //     .query(`SELECT e.first_name AS "First Name" , e.last_name AS "Last Name", d.department_name AS Department
+    //       FROM employee e
+    //       INNER JOIN role r
+    //       ON e.role_id = r.id
+    //       INNER JOIN department d
+    //       ON r.department_id = d.id
+    //       WHERE d.id = ?`,
+    //       values
+    //     );
+    // }
   
-  module.exports = new infobaseQuery(db);
+    // getEmployeeByManagerId(info) {
+    //   const values = [info.manager_id]
+    //   return this.db
+    //     .promise()
+    //     .query(
+    //       `SELECT e.first_name AS "First Name" , 
+    //               e.last_name AS "Last Name", 
+    //               CONCAT(mgmt.first_name, ' ', mgmt.last_name) AS Manager
+    //       FROM employee e
+    //       INNER JOIN employee mgmt
+    //       ON e.manager_id = mgmt.id 
+    //       WHERE e.manager_id = ?`,
+    //       values
+    //     );
+    // }
+  
+    // getBudgetByDept() {
+    //   return this.db
+    //     .promise()
+    //     .query(
+    //   `SELECT d.department_name AS Department, 
+    //           SUM(r.salary) AS Budget
+    //   FROM role r
+    //   INNER JOIN department d
+    //   ON r.department_id = d.id
+    //   GROUP BY department_name`,
+    //   );
+    // }
+}
+  
+
+module.exports = new infobaseQuery(db);
