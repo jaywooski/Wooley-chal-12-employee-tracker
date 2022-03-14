@@ -1,5 +1,5 @@
 
-const business = require('./js/queries')
+const business = require('../js/queries')
 
 
 const deptChoices = async () => {

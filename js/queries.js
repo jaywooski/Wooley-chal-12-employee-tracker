@@ -1,39 +1,41 @@
+const connection = require("../db/connection")
+
 class Business {
-    constructor(db){
-      this.db = db;
+    constructor(connection){
+      this.connection = connection;
     }
   
     addDept(info) {
       const values = [info.name];
-      return this.db
+      return this.connection
         .promise()
         .query(`INSERT INTO department (department_name) VALUES(?)`, values);
     }
   
     addRole(info) {
       const values = [info.title, info.salary, info.department_id];
-      return this.db
+      return this.connection
         .promise()
         .query(`INSERT INTO role (title, salary, department_id) VALUES(?,?,?)`, values);
     }
   
     addEmployee(info) {
       const values = [info.first, info.last, info.role_id, info.manager_id];
-      return this.db
+      return this.connection
         .promise()
         .query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES(?,?,?,?)`, values)
     }
   
     deleteEmployee(info) {
       const values = [info.emp_id];
-      return this.db
+      return this.connection
         .promise()
         .query(`DELETE FROM employee WHERE id = ?`, values)
     }
   
     updateEmpRoleById(info) {
       const values = [info.role_id, info.emp_id];
-      return this.db
+      return this.connection
         .promise()
         .query(`UPDATE employee SET role_id = ? WHERE id = ?`, values)
     }
@@ -41,13 +43,13 @@ class Business {
     
   
     viewDepts() {
-      return this.db
+      return this.connection
         .promise()
         .query(`SELECT * FROM department`);
     }
   
     viewRoles() {
-        return this.db
+        return this.connection
         .promise()
         .query(
         `SELECT r.title AS Title, 
@@ -61,7 +63,7 @@ class Business {
     }
   
     getRoleIds(){
-      return this.db
+      return this.connection
         .promise()
         .query(
         `SELECT *
@@ -70,7 +72,7 @@ class Business {
     }
   
     getEmployees() {
-      return this.db
+      return this.connection
         .promise()
         .query(
         `SELECT e.id as 'Employee_ID', 
@@ -92,7 +94,7 @@ class Business {
     }
   
     getEmpRaw() {
-      return this.db
+      return this.connection
       .promise()
       .query(
           `SELECT e.id, 
@@ -103,7 +105,7 @@ class Business {
     }
   
     getNonManagers(){
-      return this.db
+      return this.connection
       .promise()
       .query(
       `SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name
@@ -113,7 +115,7 @@ class Business {
     }
   
     getManagers() {
-      return this.db
+      return this.connection
         .promise()
         .query(
             `SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name
@@ -121,51 +123,8 @@ class Business {
         WHERE manager_id IS NULL`
       )
     }
-  
-    // getEmpByDeptId(info) {
-    //   const values = [info.dept_id]
-    //   return this.db
-    //     .promise()
-    //     .query(`SELECT e.first_name AS "First Name" , e.last_name AS "Last Name", d.department_name AS Department
-    //       FROM employee e
-    //       INNER JOIN role r
-    //       ON e.role_id = r.id
-    //       INNER JOIN department d
-    //       ON r.department_id = d.id
-    //       WHERE d.id = ?`,
-    //       values
-    //     );
-    // }
-  
-    // getEmployeeByManagerId(info) {
-    //   const values = [info.manager_id]
-    //   return this.db
-    //     .promise()
-    //     .query(
-    //       `SELECT e.first_name AS "First Name" , 
-    //               e.last_name AS "Last Name", 
-    //               CONCAT(mgmt.first_name, ' ', mgmt.last_name) AS Manager
-    //       FROM employee e
-    //       INNER JOIN employee mgmt
-    //       ON e.manager_id = mgmt.id 
-    //       WHERE e.manager_id = ?`,
-    //       values
-    //     );
-    // }
-  
-    // getBudgetByDept() {
-    //   return this.db
-    //     .promise()
-    //     .query(
-    //   `SELECT d.department_name AS Department, 
-    //           SUM(r.salary) AS Budget
-    //   FROM role r
-    //   INNER JOIN department d
-    //   ON r.department_id = d.id
-    //   GROUP BY department_name`,
-    //   );
-    // }
+
 }
   
 
-module.exports = new infobaseQuery(db);
+module.exports = new Business(connection);

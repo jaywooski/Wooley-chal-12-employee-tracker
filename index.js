@@ -1,14 +1,16 @@
 const inquirer = require('inquirer');
-const business = require('./js/queries');
-const mysql = require('mysql2');
-const db = require('./db/connection');
+const Business = require('./js/queries');
+const rolesFuncs = require('./js/role');
+const employeeFuncs = require('./js/employee');
+const deptFuncs = require('./js/department');
+const tableLog = require('console.table')
+const connection = require("./db/connection");
 
-db.connect(async function() {
-    start();
-})
 
 function start() {
-    const business = new Business();
+    
+    const business = new Business(connection)
+
     inquirer.prompt([
         {
             type: 'list',
@@ -30,9 +32,10 @@ function start() {
     ])
     .then((data) => {
         const choice = data.action;
+        
         switch (choice) {
             case 'View all departments':
-                viewDepts();
+                showDepts();
                 break;
             case 'View all roles':
                 viewRoles();
@@ -41,19 +44,19 @@ function start() {
                 viewEmployees();
                 break; 
             case 'View employees by manager':
-                viewEmployeeByManager();
+                
                 break;
             case 'View employees by department':
-                viewEmployeeByDept();
+                
                 break;
             case 'Add a role':
-                addRole();
+                
                 break;
             case 'Add a department':
-                addDept();
+                
                 break;
             case 'Add an employee':
-                addEmployee();
+                
                 break;
             case 'Delete a department':
 
@@ -65,76 +68,114 @@ function start() {
 }
 
 
+const showDepts = () => {
+    
+    business.viewDepts()
   
-// add an employee
+    .then(([rows]) => {
+      console.log('\n');
+        console.log(tableLog.getTable(rows));
+    })
+    .then(()=> {
+        start();
+    }) 
+
+}
+
+
+const viewRoles = function() {
+    business.viewRoles()
+  
+    .then(([rows]) => {
+      console.log('\n');
+      console.log(tableLog.getTable(rows));
+    })
+    .then(()=> {
+        start();
+    }) 
+}
+
+
+const viewEmployees = function(){
+    business.getEmployees()
+  
+    .then(([rows]) => {
+      console.log('\n');
+      console.log(tableLog.getTable(rows));
+    })
+    .then(()=> {
+        start();
+    }) 
+}
+
 const newEmployee = async () => {
 
-const roleArr = await cHelper.roleChoices();
+    const roles = await rolesFuncs.roleChoices();
 
-const mgmtArr = await cHelper.mgmtChoices();
+    const managers = await employeeFuncs.managerOpts();
 
-const emp = await inquirer.prompt([
-    {
-        type: "input",
-        name: "first",
-        message: "What is the Employees First Name?",
-        validate: (first) =>{
-            if (first && isNaN(first)) {
+    const employee = await inquirer.prompt([
+        {
+            type: "input",
+            name: "first",
+            message: "What is the Employees First Name?",
+            validate: (answer) =>{
+                if (answer && isNaN(answer)) {
+                    return true;
+                } else {
+                    console.log(" Please enter the employee's name!")
+                    return false;
+                }
+            }
+        },
+        {
+            type: "input",
+            name: "last",
+            message: "What is the Employees Last Name?",
+            validate: (answer) =>{
+                if (answer && isNaN(answer)) {
                 return true;
-            } else {
-                console.log(" Please Enter a Name!")
+                } else {
+                console.log(" Please enter the employee's last name!")
                 return false;
+                }
             }
+        },
+        {
+            type: "list",
+            name: 'role_id',
+            message: "What is the Employees Role?",
+            choices: roles
+        },
+        {
+            type: "list",
+            name: 'manager_id',
+            message: "Who is the Employees Manager?",
+            choices: managers,
         }
-    },
-    {
-        type: "input",
-        name: "last",
-        message: "What is the Employees Last Name?",
-        validate: (last) =>{
-            if (last && isNaN(last)) {
-            return true;
-            } else {
-            console.log(" Please Enter a Name!")
-            return false;
-            }
-        }
-    },
-    {
-        type: "list",
-        name: 'role_id',
-        message: "What is the Employees Role?",
-        choices: roleArr
-    },
-    {
-        type: "list",
-        name: 'manager_id',
-        message: "Who is the Employees Manager?",
-        choices: mgmtArr,
-    }
-]);
+    ]);
 
-await business.addEmployee(emp);
+    await business.addEmployee(employee);
 
-start();  
+    start();  
 
 }
   
-  // Add a role
+  
   const newRole = async () => {
   
-    const choicesArr = await cHelper.deptChoices();
+    const deptArr = await deptFuncs.deptChoices();
   
     const role = await inquirer.prompt([
         {
           type: "input",
-          name: "title",
+          name: "name",
           message: "What is the name of the Role?",
-          validate: (title) =>{
-            if (title) {
+          validate: (name) =>{
+            if (name) {
               return true;
             } else {
-              console.log(" Please Enter a Role Name!")
+              console.log(" Please enter the name of the position role!")
               return false;
             }
           },
@@ -147,15 +188,15 @@ start();
            if(salary && !isNaN(salary)){
              return true;
            } else {
-             console.log(" Please Enter a Role Salary");
+             console.log(" Please enter how much the role pays!");
            }
          }
        },
        {
         type: "list",
         name: 'department_id',
-        message: "What Department is the Role associated with?",
-        choices: choicesArr
+        message: "Which department is the role associated with?",
+        choices: deptArr
       }
      ]);
   
@@ -163,53 +204,50 @@ start();
   
     start();  
    
-  }
+}
   
-// Delete and Employee
+
 const deleteEmployee = async () => {
-const empArr = await cHelper.NonMgmtChoices();
+    const employees = await underManagementOpts.getNonManagers();
 
-const emp = await inquirer.prompt([
-    {
-    type: "list",
-    name: "emp_id",
-    message: "What Employee do you want to Delete?",
-    choices: empArr,
-    loop: false,
-    }
-    ]);
+    const employee = await inquirer.prompt(
+        {
+            type: "list",
+            name: "emp_id",
+            message: "What Employee do you want to Delete?",
+            choices: empArr
+        }
+        );
 
-await business.deleteEmployee(emp);
+    await business.deleteEmployee(employee);
 
-start();
+    start();
 
 }
   
-  // Update an employees role
+
   const updateEmpRole = async () => {
   
-    const roleArr = await cHelper.roleChoices();
+    const roles = await rolesFuncs.roleChoices();
   
-    const empArr = await cHelper.empChoices();
+    const employees = await employeeFuncs.underManagementOpts();
   
-    const emp = await inquirer.prompt([
+    const employee = await inquirer.prompt([
       {
         type: "list",
         name: "emp_id",
         message: "What is the Employee do you want to update?",
-        choices: empArr,
-        loop: false,
+        choices: employees
       },
       {
         type: "list",
         name: 'role_id',
         message: "What is the Employees Role?",
-        choices: roleArr,
-        loop: false,
+        choices: roles
       }
      ]);
   
-    await business.updateEmpRoleById(emp);
+    await business.updateEmpRoleById(employee);
   
     start();  
    

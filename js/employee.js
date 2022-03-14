@@ -40,7 +40,7 @@ const managerOpts = async () => {
   
 }
 
-const underManagementEmps = async () => {
+const underManagementOpts = async () => {
     const tempArr = await business.getNonManagers();
     
     const options = tempArr[0];
@@ -58,4 +58,4 @@ const underManagementEmps = async () => {
     return optionsArray;
   
 }
-module.exports = { employeeOpts, managerOpts, underManagementEmps };
+module.exports = { employeeOpts, managerOpts, underManagementOpts };
