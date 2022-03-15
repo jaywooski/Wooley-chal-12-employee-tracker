@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const Business = require('./js/queries');
+const business = require('./js/queries');
 const rolesFuncs = require('./js/role');
 const employeeFuncs = require('./js/employee');
 const deptFuncs = require('./js/department');
@@ -9,7 +9,6 @@ const connection = require("./db/connection");
 
 function start() {
     
-    const business = new Business(connection)
 
     inquirer.prompt([
         {
@@ -70,6 +69,7 @@ function start() {
 
 const showDepts = () => {
     
+
     business.viewDepts()
   
     .then(([rows]) => {
@@ -226,29 +226,31 @@ const deleteEmployee = async () => {
 }
   
 
-  const updateEmpRole = async () => {
-  
+const updateEmpRole = async () => {
+
     const roles = await rolesFuncs.roleChoices();
-  
+
     const employees = await employeeFuncs.underManagementOpts();
-  
+
     const employee = await inquirer.prompt([
-      {
+        {
         type: "list",
         name: "emp_id",
         message: "What is the Employee do you want to update?",
         choices: employees
-      },
-      {
+        },
+        {
         type: "list",
         name: 'role_id',
         message: "What is the Employees Role?",
         choices: roles
-      }
-     ]);
-  
+        }
+        ]);
+
     await business.updateEmpRoleById(employee);
-  
+
     start();  
-   
-  }
+
+}
+
+start();
