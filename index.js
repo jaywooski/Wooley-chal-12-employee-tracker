@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const business = require('./js/queries');
 const rolesFuncs = require('./js/role');
 const employeeFuncs = require('./js/employee');
-const deptFuncs = require('./js/department');
+const { deptChoices } = require('./js/department');
 const tableLog = require('console.table')
 const connection = require("./db/connection");
 
@@ -19,13 +19,14 @@ function start() {
                 'View all departments',
                 'View all roles',
                 'View all employees',
-                'View employees by manager',
-                'View employees by department',
+                // 'View employees by manager',
+                // 'View employees by department',
                 'Add a role',
                 'Add a department',
                 'Add an employee',
-                'Delete a department',
-                'Update an employee role'
+                // 'Delete a department',
+                'Update an employee role',
+                'Delete an employee'
             ]
         }
     ])
@@ -42,12 +43,12 @@ function start() {
             case 'View all employees':
                 viewEmployees();
                 break; 
-            case 'View employees by manager':
+            // case 'View employees by manager':
                 
-                break;
-            case 'View employees by department':
+            //     break;
+            // case 'View employees by department':
                 
-                break;
+            //     break;
             case 'Add a role':
                 newRole();
                 break;
@@ -57,8 +58,14 @@ function start() {
             case 'Add an employee':
                 newEmployee();
                 break;
-            case 'Delete a department':
+            // case 'Delete a department':
 
+            //     break;
+            case 'Update an employee role':
+                updateEmpRole();
+                break;
+            case 'Delete an employee':
+                deleteEmployee();
                 break;
             default:
                 break;
@@ -164,7 +171,7 @@ const newEmployee = async () => {
   
 const newRole = async () => {
   
-    const deptArr = await deptFuncs.deptChoices();
+    const deptArr = await deptChoices();
   
     const role = await inquirer.prompt([
         {
