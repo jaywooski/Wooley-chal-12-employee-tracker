@@ -49,13 +49,13 @@ function start() {
                 
                 break;
             case 'Add a role':
-                
+                newRole();
                 break;
             case 'Add a department':
-                
+                newDept();
                 break;
             case 'Add an employee':
-                
+                newEmployee();
                 break;
             case 'Delete a department':
 
@@ -74,7 +74,7 @@ const showDepts = () => {
   
     .then(([rows]) => {
       console.log('\n');
-        console.log(tableLog.getTable(rows));
+        console.table(rows)
     })
     .then(()=> {
         start();
@@ -88,7 +88,7 @@ const viewRoles = function() {
   
     .then(([rows]) => {
       console.log('\n');
-      console.log(tableLog.getTable(rows));
+      console.table(rows);
     })
     .then(()=> {
         start();
@@ -101,7 +101,7 @@ const viewEmployees = function(){
   
     .then(([rows]) => {
       console.log('\n');
-      console.log(tableLog.getTable(rows));
+      console.table(rows);
     })
     .then(()=> {
         start();
@@ -162,7 +162,7 @@ const newEmployee = async () => {
 }
   
   
-  const newRole = async () => {
+const newRole = async () => {
   
     const deptArr = await deptFuncs.deptChoices();
   
@@ -205,7 +205,30 @@ const newEmployee = async () => {
     start();  
    
 }
+
+const newDept = async () => {
   
+    const dept = await inquirer.prompt(
+        {
+            type: "input",
+            name: "name",
+            message: "What is the name of the new Department?",
+            validate: (name) =>{
+                if (name) {
+                    return true;
+                } else {
+                    console.log(" Please enter the name of the department!")
+                    return false;
+                }
+            }
+        }
+    );
+  
+    await business.addDept(dept);
+  
+    start();  
+   
+}
 
 const deleteEmployee = async () => {
     const employees = await underManagementOpts.getNonManagers();

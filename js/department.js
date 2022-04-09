@@ -3,7 +3,7 @@ const business = require('../js/queries')
 
 
 const deptChoices = async () => {
-    const tempArr = await business.getDepts();
+    const tempArr = await business.viewDepts();
   
     const options = tempArr[0];
   
@@ -11,7 +11,7 @@ const deptChoices = async () => {
   
     options.forEach((element) => {
       let obj = {
-        name: element.department_name,
+        name: element.dept_name,
         value: element.id
       }
       optionsArray.push(obj);
